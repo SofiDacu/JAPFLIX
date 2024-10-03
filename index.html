@@ -9,11 +9,37 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
   
 </head>
 
 <body class="bg-dark">
   <main>
+
+ <!-- Contenedor para la película seleccionada -->
+ <div id="detallePelicula" class="container bg-secondary text-light p-3 mb-3" style="display: none;">
+  <h2 id="detalleTitle"></h2>
+  <p id="detalleOverview"></p>
+  <ul id="detalleGenres"></ul>
+</div>
+
+
+ <!-- Offcanvas para mostrar detalles de la película -->
+ <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel">
+  <div class="offcanvas-header">
+      <h5 id="offcanvasTitle" class="offcanvas-title"></h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+      <p id="offcanvasOverview"></p>
+      <h6>Géneros:</h6>
+      <ul id="offcanvasGenres"></ul>
+      <h6>Detalles:</h6>
+      <div id="offcanvasDetails"></div>
+  </div>
+</div>
+
+
     <div class="text-center container">
       <div class="row py-lg-3">
         <div class="col-lg-6 col-md-8 mx-auto">
@@ -25,7 +51,7 @@
     </div>
 
     <div class="album">
-      <ul class="list-group container" id="lista">
+      <ul id="listaPeliculas" class="list-group container" id="lista">
       </ul>
     </div>
   </main>
@@ -42,7 +68,7 @@
   </footer>
 
   <script src="js/bootstrap.bundle.min.js"></script>
-
+  <script src="script.js"></script>
 </body>
 
 </html>
