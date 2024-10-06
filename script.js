@@ -14,7 +14,7 @@ function mostrarPeliculas(filtradas) {
         console.error("No se encontró el elemento con ID 'listaPeliculas'");
         return; // Salir si no se encuentra el elemento
     }
-    
+
     listaPeliculas.innerHTML = ''; // Limpiar la lista
 
     if (filtradas.length === 0) {
@@ -24,16 +24,42 @@ function mostrarPeliculas(filtradas) {
 
     filtradas.forEach(pelicula => {
         const li = document.createElement('li');
-        li.classList.add('list-group-item'); // Para estilos de Bootstrap
-        li.textContent = `${pelicula.title} (${pelicula.vote_average} ⭐)`;
-        li.onclick = () => mostrarEnOffcanvas(pelicula);
+        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center'); // Para estilos de Bootstrap
+
+        // Si no tiene tagline, mostrar un texto predeterminado
+        const tagline = pelicula.tagline ? pelicula.tagline : "No hay descripción disponible";
+
+        // Título, tagline y estrellas
+        li.innerHTML = `
+            <div>
+                <strong>${pelicula.title}</strong>
+                <p>${tagline}</p>
+                <div>${getStarRating(pelicula.vote_average)}</div> <!-- Estrellas -->
+            </div>
+        `;
+
+        li.onclick = () => mostrarEnOffcanvas(pelicula); // Hacer clic para mostrar detalles en el offcanvas
         listaPeliculas.appendChild(li);
     });
 }
 
+// Función para convertir la calificación de la película en estrellas
+function getStarRating(vote) {
+    const stars = Math.round(vote / 2); // Convierte el promedio a estrellas sobre 5
+    let starHtml = "";
+    for (let i = 0; i < 5; i++) {
+        if (i < stars) {
+            starHtml += '<i class="fa fa-star text-warning"></i>';  // Estrella llena
+        } else {
+            starHtml += '<i class="fa fa-star-o text-secondary"></i>';  // Estrella vacía
+        }
+    }
+    return starHtml;
+}
+
 // Función para filtrar las películas según la búsqueda
 function buscarPeliculas() {
-    const inputBuscar = document.getElementById('inputBuscar').value.toLowerCase();
+    const inputBuscar = document.getElementById('inputBuscar').value.toLowerCase(); // Obtener valor del campo de búsqueda
     const peliculasFiltradas = peliculas.filter(pelicula => {
         return (
             pelicula.title.toLowerCase().includes(inputBuscar) ||
@@ -43,8 +69,16 @@ function buscarPeliculas() {
         );
     });
 
-    mostrarPeliculas(peliculasFiltradas);
+    mostrarPeliculas(peliculasFiltradas); // Mostrar películas filtradas
 }
+
+// Evento de carga de la página
+window.onload = async () => {
+    await cargarPeliculas();
+
+    // Evento del botón de búsqueda
+    document.getElementById('btnBuscar').onclick = buscarPeliculas;
+};
 
 // Función para mostrar los detalles de la película en el contenedor
 function mostrarEnOffcanvas(pelicula) {
@@ -80,10 +114,35 @@ function mostrarEnOffcanvas(pelicula) {
     offcanvasElement.show(); // Despliega el offcanvas
 }
 
-// Evento de carga de la página
-window.onload = async () => {
-    await cargarPeliculas();
 
-    // Evento del botón de búsqueda
-    document.getElementById('btnBuscar').onclick = buscarPeliculas;
-};
+
+// Para las estrellas 
+// Función para mostrar los resultados
+function displayResults(results) {
+    const lista = document.getElementById("lista");
+    lista.innerHTML = ""; // Limpiar la lista anterior
+
+    if (results.length === 0) {
+      lista.innerHTML = "<li class='list-group-item'>No se encontraron resultados.</li>";
+      return;
+    }
+
+    results.forEach(movie => {
+      const starRating = getStarRating(movie.vote_average);
+      const listItem = document.createElement("li");
+      listItem.className = "list-group-item";
+      listItem.innerHTML = `
+        <h5 class="movie-title">${movie.title}</h5>
+        <p>${movie.tagline}</p>
+        <p>${starRating}</p>
+      `;
+      
+      // Añadir evento de clic para mostrar detalles
+      listItem.querySelector('.movie-title').addEventListener("click", () => showMovieDetails(movie, listItem));
+      
+      lista.appendChild(listItem);
+    });
+  };
+
+
+
